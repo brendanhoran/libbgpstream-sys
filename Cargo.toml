@@ -6,7 +6,7 @@ authors = ["Brendan Horan"]
 description = "System bindings for bgpstream"
 readme = "README.md"
 license = "BSD-3-Clause"
-documentation = "README.md"
+documentation = "https://github.com/brendanhoran/libbgpstream-sys/blob/main/README.md"
 repository = "https://github.com/brendanhoran/libbgpstream-sys"
 
 [dependencies]
