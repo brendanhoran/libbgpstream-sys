@@ -1,0 +1,39 @@
+--- m4/ax_pthread.m4.org	2023-06-23 14:55:01.982614710 +1000
++++ m4/ax_pthread.m4	2023-06-23 14:57:25.091174760 +1000
+@@ -302,36 +302,6 @@
+                                   [Define to necessary symbol if this constant
+                                    uses a non-standard name on your system.])])
+ 
+-	AC_MSG_CHECKING([for pthread_yield])
+-	pthread_yield_func=unknown
+-        AC_LINK_IFELSE([AC_LANG_PROGRAM([#include <pthread.h>
+-                        static void routine(void *a) { a = 0; }
+-                        static void *start_routine(void *a) { return a; }],
+-                       [pthread_t th; pthread_attr_t attr;
+-                        pthread_yield();])],
+-			[pthread_yield_func="pthread_yield";
+-			AC_MSG_RESULT(yes)],
+-			[AC_MSG_RESULT(no)])
+-	if test "x$pthread_yield_func" = xunknown; then
+-	   AC_MSG_CHECKING([for pthread_yeild_np])
+-       	   AC_LINK_IFELSE([AC_LANG_PROGRAM([#include <pthread.h>
+-                        static void routine(void *a) { a = 0; }
+-                        static void *start_routine(void *a) { return a; }],
+-                       [pthread_t th; pthread_attr_t attr;
+-                        pthread_yield_np();])],
+-			[pthread_yield_func="pthread_yield_np";
+-			AC_MSG_RESULT(yes)],
+-			[AC_MSG_RESULT(no)])
+-	fi
+-	if test "x$pthread_yield_func" = xunknown; then
+-	   AC_MSG_ERROR([could not find pthread_yield function])
+-	else
+-		AC_DEFINE_UNQUOTED(PTHREAD_YIELD_FUNC, $pthread_yield_func,
+-				   [Define to necessary func name if
+-				   pthread_yield or pthread_yield_np do not
+-				   exist on your system])
+-	fi
+-
+         AC_CACHE_CHECK([if more special flags are required for pthreads],
+             [ax_cv_PTHREAD_SPECIAL_FLAGS],
+             [ax_cv_PTHREAD_SPECIAL_FLAGS=no
