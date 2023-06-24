@@ -5,6 +5,10 @@ edition = "2021"
 authors = ["Brendan Horan"]
 description = "System bindings for bgpstream"
 readme = "README.md"
+license = "BSD-3-Clause"
+license-file = "LICENSE"
+documentation = "README.md"
+repository = "https://github.com/brendanhoran/libbgpstream-sys"
 
 [dependencies]
 
