@@ -1,5 +1,6 @@
 extern crate bindgen;
 extern crate rdkafka_sys;
+extern crate wandio_sys;
 
 use autotools::Config;
 use std::env;
@@ -56,6 +57,8 @@ fn main() -> std::io::Result<()> {
     // Map the rust auto generated build output directory for rdkafka-sys dependency
     let kafka_root = env::var("DEP_RDKAFKA_ROOT").unwrap();
 
+    let wandio_root = env::var("DEP_WANDIO_ROOT").unwrap();
+
     // Extract the bgpstream tar file, must be done before setting "libdir_path"
     extract_bgpstream(&build_output_dir)?;
 
@@ -97,9 +100,24 @@ fn main() -> std::io::Result<()> {
     // Run autogen since this tarball is originally from a git clone
     run_autogen(&build_output_dir)?;
 
+
     // Run configure and make via the autotools crate
     let mut conf = Config::new(&libdir_path);
     conf.enable_static()
+        // Wandio links to system versions of the below library's
+        // No better way at the moment so, we just link to the system versions of libcurl and
+        // friends
+        // lpthread -lbz2 -lz -llzo2 -llzma -lzstd -llz4 -lcurl
+        .cflag("-lpthread")
+        .cflag("-lbz2")
+        .cflag("-lz")
+        .cflag("-llzo2")
+        .cflag("-llzma")
+        .cflag("-lzstd")
+        .cflag("-llz4")
+        .cflag("-lcurl")
+        .cflag(format!("-I{wandio_root}/lib/"))
+        .ldflag(format!("-L{wandio_root}/lib/"))
         .disable_shared()
         .cflag(format!("-I{kafka_root}/src/"))
         .ldflag(format!("-L{kafka_root}/src/"))
@@ -131,7 +149,5 @@ fn main() -> std::io::Result<()> {
     println!("cargo:rustc-link-lib=static=bgpstream");
     // Add in additional search path
     println!("cargo:rustc-link-search=native={bgpstream_libdir}");
-    // Tell rustc to link in the dynamic library called wandio
-    println!("cargo:rustc-link-lib=wandio");
     Ok(())
 }

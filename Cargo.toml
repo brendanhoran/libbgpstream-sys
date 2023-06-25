@@ -1,6 +1,6 @@
 [package]
 name = "libbgpstream-sys"
-version = "0.1.2"
+version = "0.2.0"
 edition = "2021"
 authors = ["Brendan Horan"]
 description = "System bindings for bgpstream"
@@ -11,8 +11,10 @@ repository = "https://github.com/brendanhoran/libbgpstream-sys"
 
 [dependencies]
 rdkafka-sys = "4.5.0"
+wandio-sys = { git = "https://github.com/brendanhoran/wandio-sys.git" }
 
 [build-dependencies]
 bindgen = "0.65.1"
 autotools = "0.2"
 rdkafka-sys = "4.5.0"
+wandio-sys = { git = "https://github.com/brendanhoran/wandio-sys.git" }
