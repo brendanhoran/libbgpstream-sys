@@ -1,0 +1,11 @@
+--- m4/check_rdkafka_version.m4.org	2023-07-02 18:11:51.409725946 +1000
++++ m4/check_rdkafka_version.m4	2023-07-02 18:12:29.041896799 +1000
+@@ -45,7 +45,7 @@
+ 
+   # there is some version of librdkafka installed, check that it is what we want
+   AC_RUN_IFELSE([AC_LANG_PROGRAM([
+-    #include <librdkafka/rdkafka.h>
++    #include "rdkafka.h"
+     #include <stdio.h>
+     ],[
+       int version = rd_kafka_version();

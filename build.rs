@@ -1,4 +1,5 @@
 extern crate bindgen;
+extern crate rdkafka_sys;
 
 use autotools::Config;
 use std::env;
@@ -21,30 +22,17 @@ fn extract_bgpstream(build_output_dir: &str) -> std::io::Result<()> {
     Ok(())
 }
 
-// Patch bgpstream to remove the check for pthreads as its broken on modern toolchains
-fn patch_remove_pthread(build_output_dir: &str) -> std::io::Result<()> {
+fn apply_source_patch(
+    build_output_dir: &str,
+    source_file: &str,
+    patch_file: &str,
+) -> std::io::Result<()> {
     Command::new("patch")
         .arg(format!(
-            "{}/{BGPSTREAM_VERSION}/m4/ax_pthread.m4",
-            build_output_dir
+            "{}/{BGPSTREAM_VERSION}/{}",
+            build_output_dir, source_file
         ))
-        .arg(format!("vendor/remove-phread-check.patch"))
-        .status()
-        .unwrap();
-
-    Ok(())
-}
-
-// Remove duplicate "AM_INIT_AUTOMAKE" command in the configure input file
-fn remove_duplicate_automake_options(build_output_dir: &str) -> std::io::Result<()> {
-    let sed_matcher = r#"/^AM_INIT_AUTOMAKE$/d"#;
-    Command::new("sed")
-        .arg("-i")
-        .arg(sed_matcher)
-        .arg(format!(
-            "{}/{BGPSTREAM_VERSION}/configure.ac",
-            build_output_dir
-        ))
+        .arg(format!("vendor/{}", patch_file))
         .status()
         .unwrap();
 
@@ -65,6 +53,9 @@ fn main() -> std::io::Result<()> {
     // Map the Rust auto generated build output directory to a friendly name
     let build_output_dir = env::var("OUT_DIR").unwrap();
 
+    // Map the rust auto generated build output directory for rdkafka-sys dependency
+    let kafka_root = env::var("DEP_RDKAFKA_ROOT").unwrap();
+
     // Extract the bgpstream tar file, must be done before setting "libdir_path"
     extract_bgpstream(&build_output_dir)?;
 
@@ -75,16 +66,43 @@ fn main() -> std::io::Result<()> {
         .canonicalize()
         .expect("cannot canonicalize path");
 
-    // Setup the build
-    patch_remove_pthread(&build_output_dir)?;
-    remove_duplicate_automake_options(&build_output_dir)?;
+    // Patch to fix pthread check that breaks on modern build tool chains
+    apply_source_patch(
+        &build_output_dir,
+        "/m4/ax_pthread.m4",
+        "remove-phread-check.patch",
+    )?;
+
+    // Patch the Kafka check to search for the library in the right location
+    apply_source_patch(
+        &build_output_dir,
+        "/m4/check_rdkafka_version.m4",
+        "change_include_path_rdkafka_check.patch",
+    )?;
+
+    // Patch the Kafka transport to search for the library in the right location
+    apply_source_patch(
+        &build_output_dir,
+        "lib/transports/bs_transport_kafka.c",
+        "change_include_path_rdkafka_transports.patch",
+    )?;
+
+    // Patch configure to fix duplicate warnings and apply syntax updates
+    apply_source_patch(
+        &build_output_dir,
+        "configure.ac",
+        "update_automake_configure_ac.patch",
+    )?;
+
+    // Run autogen since this tarball is originally from a git clone
     run_autogen(&build_output_dir)?;
 
     // Run configure and make via the autotools crate
     let mut conf = Config::new(&libdir_path);
     conf.enable_static()
         .disable_shared()
-        .without("kafka", None)
+        .cflag(format!("-I{kafka_root}/src/"))
+        .ldflag(format!("-L{kafka_root}/src/"))
         .insource(true);
     conf.build();
 

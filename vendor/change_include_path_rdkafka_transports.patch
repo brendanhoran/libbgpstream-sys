@@ -1,0 +1,11 @@
+--- lib/transports/bs_transport_kafka.c.org	2023-07-02 18:39:46.030425522 +1000
++++ lib/transports/bs_transport_kafka.c	2023-07-02 18:39:57.976489403 +1000
+@@ -30,7 +30,7 @@
+ #include "bgpstream_log.h"
+ #include "utils.h"
+ #include <assert.h>
+-#include <librdkafka/rdkafka.h>
++#include <rdkafka.h>
+ #include <stdlib.h>
+ #include <string.h>
+ 

@@ -1,0 +1,28 @@
+--- configure.ac.org	2023-07-02 20:47:43.779999603 +1000
++++ configure.ac	2023-07-02 20:51:16.317212298 +1000
+@@ -24,7 +24,7 @@
+ # POSSIBILITY OF SUCH DAMAGE.
+ #
+ 
+-AC_PREREQ([2.68])
++AC_PREREQ([2.71])
+ 
+ 
+ # bgpstream package version
+@@ -32,7 +32,7 @@
+ m4_define([PKG_MID_VERSION],   [1])
+ m4_define([PKG_MINOR_VERSION], [0])
+ 
+-AC_INIT([libbgpstream], PKG_MAJOR_VERSION.PKG_MID_VERSION.PKG_MINOR_VERSION, [bgpstream-info@caida.org])
++AC_INIT([libbgpstream],[PKG_MAJOR_VERSION.PKG_MID_VERSION.PKG_MINOR_VERSION],[bgpstream-info@caida.org])
+ 
+ # libbgpstream shared library version
+ # (no relation to pkg version)
+@@ -62,7 +62,6 @@
+ #
+ DISABLE_RPATH
+ 
+-AM_INIT_AUTOMAKE
+ 
+ AC_CONFIG_MACRO_DIR([m4])
+
