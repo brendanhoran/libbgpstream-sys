@@ -10,7 +10,9 @@ documentation = "https://github.com/brendanhoran/libbgpstream-sys/blob/main/READ
 repository = "https://github.com/brendanhoran/libbgpstream-sys"
 
 [dependencies]
+rdkafka-sys = "4.5.0"
 
 [build-dependencies]
 bindgen = "0.65.1"
 autotools = "0.2"
+rdkafka-sys = "4.5.0"
