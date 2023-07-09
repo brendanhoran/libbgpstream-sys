@@ -13,7 +13,7 @@ This requires us to run "autogen.sh" to create the configure script.
 
 ## System dependencies
 
-**Your system must have libcurl installed!***    
+**Your system must have libcurl installed!**    
 
 I'd like to use the static version of `curl-sys` but that has caused other issues.   
 

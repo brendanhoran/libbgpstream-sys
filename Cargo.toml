@@ -1,6 +1,6 @@
 [package]
 name = "libbgpstream-sys"
-version = "0.2.0"
+version = "0.2.1"
 edition = "2021"
 authors = ["Brendan Horan"]
 description = "System bindings for bgpstream"
