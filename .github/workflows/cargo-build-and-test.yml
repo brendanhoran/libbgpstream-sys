@@ -16,7 +16,7 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Install dependences
-      run: sudo apt-get install -y libcurl4-openssl-dev libbz2-dev liblzo2-dev liblzma-dev
+      run: sudo apt-get install -y libcurl4-openssl-dev libbz2-dev liblzo2-dev liblzma-dev libzstd-dev liblz4-dev
     - name: Build project
       run: cargo build --verbose
     - name: Run cargo tests
