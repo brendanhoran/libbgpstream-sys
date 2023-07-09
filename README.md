@@ -13,8 +13,11 @@ This requires us to run "autogen.sh" to create the configure script.
 
 ## System dependencies
 
-You will currently need "wandio" built with http support installed on your machine.
-This is not ideal and I plan to resolve this external dependency later.
+**Your system must have libcurl installed!***    
 
-You can find wandio at:
-https://github.com/LibtraceTeam/wandio
+I'd like to use the static version of `curl-sys` but that has caused other issues.   
+
+Further details on what this issue looks like can be found here:   
+https://github.com/brendanhoran/wandio-sys#system-dependencies   
+
+This results in linking to the following system libraries in this crates [buils.rs](https://github.com/brendanhoran/libbgpstream-sys/blob/4325a413b706edd94ca4d10857d845d6252c46bb/build.rs#L107).   
