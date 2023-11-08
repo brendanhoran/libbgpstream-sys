@@ -153,7 +153,7 @@ fn main() -> std::io::Result<()> {
     Ok(())
 }
 
-#[derive(Default, Debug)]
+#[derive(Debug)]
 struct CustomCallbacks(String);
 
 impl bindgen::callbacks::ParseCallbacks for CustomCallbacks {
