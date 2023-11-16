@@ -134,7 +134,7 @@ fn main() -> std::io::Result<()> {
         .clang_arg(format!("-I{bgpstream_libdir}/"))
         .clang_arg(format!("-I{bgpstream_libdir}/utils"))
         .generate_comments(false)
-        .parse_callbacks(Box::new(bindgen::CargoCallbacks))
+        .parse_callbacks(Box::new(CustomCallbacks(build_output_dir.clone())))
         .generate()
         .expect("Unable to generate bindings");
 
@@ -145,9 +145,31 @@ fn main() -> std::io::Result<()> {
 
     // Regenerate if changed
     println!("cargo:rerun-if-changed=wrapper.h");
+    println!("cargo:rerun-if-changed=vendor/{BGPSTREAM_VERSION}.tgz");
     // Name of the library
     println!("cargo:rustc-link-lib=static=bgpstream");
     // Add in additional search path
     println!("cargo:rustc-link-search=native={bgpstream_libdir}");
     Ok(())
+}
+
+#[derive(Debug)]
+struct CustomCallbacks(String);
+
+impl bindgen::callbacks::ParseCallbacks for CustomCallbacks {
+    fn header_file(&self, filename: &str) {
+        if !filename.starts_with(&self.0) {
+            println!("cargo:rerun-if-changed={}", filename);
+        }
+    }
+
+    fn include_file(&self, filename: &str) {
+        if !filename.starts_with(&self.0) {
+            println!("cargo:rerun-if-changed={}", filename);
+        }
+    }
+
+    fn read_env_var(&self, key: &str) {
+        println!("cargo:rerun-if-env-changed={}", key);
+    }
 }
