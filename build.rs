@@ -108,7 +108,7 @@ fn main() -> std::io::Result<()> {
         // No better way at the moment so, we just link to the system versions of libcurl and
         // friends
         // lpthread -lbz2 -lz -llzo2 -llzma -lzstd -llz4 -lcurl
-        .cflag("-lpthread")
+        //.cflag("-lpthread")
         .cflag("-lbz2")
         .cflag("-lz")
         .cflag("-llzo2")
